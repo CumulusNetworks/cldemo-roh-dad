@@ -1,0 +1,23 @@
+{% set intvars = interfaces[ansible_hostname] -%}
+!
+{% for neighbor in intvars.neighbors %}
+interface {{ neighbor }}
+ ipv6 nd ra-interval 10
+ no ipv6 nd suppress-ra
+!
+{% endfor %}
+router bgp {{ intvars.asn }}
+    bgp router-id {{ intvars.loopback }}
+    network {{ intvars.loopback }}/32
+{% for neighbor in intvars.neighbors %}
+    neighbor {{ neighbor }} interface remote-as external
+{% endfor %}
+!
+address-family ipv6 unicast
+  neighbor fabric activate
+{% for neighbor in intvars.neighbors %}
+  neighbor {{ neighbor }} activate
+{% endfor %}
+exit-address-family
+!
+!

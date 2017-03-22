@@ -1,0 +1,27 @@
+---
+- hosts: spines
+  user: cumulus
+  become: yes
+  become_method: sudo
+  roles:
+    - configure-interfaces
+    - quagga
+
+- hosts: leafs
+  user: cumulus
+  become: yes
+  become_method: sudo
+  roles:
+    - configure-interfaces
+    - quagga
+
+- hosts: servers
+  user: cumulus
+  become: yes
+  become_method: sudo
+  roles:
+    - install-docker-ifupdown2
+    - configure-interfaces
+    - deploy-crohdad
+    - deploy-containers
+
