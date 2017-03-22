@@ -21,7 +21,9 @@ Using this technique you can deploy containers from a single large 172.16.0.0/16
 
 Quickstart: Run the demo
 ------------------------
-Before running this demo, install [VirtualBox](https://www.virtualbox.org/wiki/Download_Old_Builds) and [Vagrant](https://releases.hashicorp.com/vagrant/). The currently supported versions of VirtualBox and Vagrant can be found in the [cldemo-vagrant](https://github.com/cumulusnetworks/cldemo-vagrant) prequisites section.
+Before running this demo, install [VirtualBox](https://www.virtualbox.org/wiki/Download_Old_Builds) and [Vagrant](https://releases.hashicorp.com/vagrant/). The currently supported versions of VirtualBox and Vagrant can be found on the main [cldemo-vagrant](https://github.com/cumulusnetworks/cldemo-vagrant#prerequisites) documentation page under the "prequisites" section.
+
+Once the prequisites have been installed, proceed with the steps below.
 
 ```
 git clone https://github.com/cumulusnetworks/cldemo-vagrant
@@ -38,9 +40,8 @@ sudo apt-get update -y
 sudo apt-get install ansible python-pip -qy
 sudo pip install ansible --upgrade
 
-git clone https://github.com/cumulusnetworks/cldemo-roh-docker
-cd cldemo-roh-docker
-git checkout crohdad
+git clone https://github.com/CumulusNetworks/cldemo-roh-dad.git
+cd cldemo-roh-dad
 
 ansible-playbook ./run-demo.yml
 ```
