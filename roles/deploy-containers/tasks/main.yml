@@ -1,9 +1,6 @@
 - name: Create html shared folder on host
   file: path=/root/html state=directory mode=0755
 
-- name: Copy index.html to Server
-  template: src=index.html.j2 dest=/root/html/index.html
-
 - name: Copy index.php to Server
   template: src=index.php.j2 dest=/root/html/index.php
 
