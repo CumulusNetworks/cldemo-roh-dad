@@ -5,20 +5,8 @@ num_of_containers: 3
 docker_networks:
   network_a:
     bridge_name: "docker-neta"
-    subnet: '172.18.0.0/24'
-    gateway: '172.18.0.254'
-  network_b:
-    bridge_name: "docker-netb"
-    subnet: '172.19.0.0/24'
-    gateway: '172.19.0.254'
-  network_c:
-    bridge_name: "docker-netc"
-    subnet: '172.20.0.0/24'
-    gateway: '172.20.0.254'
-  network_d:
-    bridge_name: "docker-netd"
-    subnet: '172.21.0.0/24'
-    gateway: '172.21.0.254'
+    subnet: '172.16.0.0/16'
+    gateway: '172.16.255.254'
 
 interfaces:
     leaf01:
@@ -82,18 +70,18 @@ interfaces:
       neighbors:
         eth1:
         eth2:
-      docker_network: network_b
+      docker_network: network_a
     server03:
       loopback: "10.0.0.33"
       asn: 65033
       neighbors:
         eth1:
         eth2:
-      docker_network: network_c
+      docker_network: network_a
     server04:
       loopback: "10.0.0.34"
       asn: 65034
       neighbors:
         eth1:
         eth2:
-      docker_network: network_d
+      docker_network: network_a
