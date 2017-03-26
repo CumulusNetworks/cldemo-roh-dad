@@ -1,5 +1,7 @@
 {% set intvars = interfaces[ansible_hostname] -%}
 !
+ip import-table 30
+!
 {% for neighbor in intvars.neighbors %}
 interface {{ neighbor }}
  ipv6 nd ra-interval 10
@@ -7,11 +9,14 @@ interface {{ neighbor }}
 !
 {% endfor %}
 router bgp {{ intvars.asn }}
-    bgp router-id {{ intvars.loopback }}
-    network {{ intvars.loopback }}/32
+ bgp router-id {{ intvars.loopback }}
+ network {{ intvars.loopback }}/32
 {% for neighbor in intvars.neighbors %}
     neighbor {{ neighbor }} interface remote-as external
 {% endfor %}
+ address-family ipv4 unicast
+  redistribute table 30
+ exit-address-family
 !
 address-family ipv6 unicast
   neighbor fabric activate
