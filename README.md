@@ -34,11 +34,6 @@ vagrant up leaf01 leaf02 leaf03 leaf04 spine01 spine02 server01 server02 server0
 
 vagrant ssh oob-mgmt-server
 sudo su - cumulus
-sudo apt-get install software-properties-common -qy
-sudo apt-add-repository ppa:ansible/ansible -y
-sudo apt-get update -y
-sudo apt-get install ansible python-pip -qy
-sudo pip install ansible --upgrade
 
 git clone https://github.com/CumulusNetworks/cldemo-roh-dad.git
 cd cldemo-roh-dad
@@ -48,44 +43,13 @@ ansible-playbook ./run-demo.yml
 ### Viewing the Results
 
 #### Watch The CRoHDAd Daemon Advertising Routes
-View the output of the CRoHDAd daemon as it is advertising /32 host-routes into the Quagga instance running in the same container.
+View the output of the CRoHDAd daemon as it is advertising /32 host-routes in the the new kernel routing table.
 ```
 vagrant ssh oob-mgmt-server
 sudo su - cumulus
 ssh server01
 sudo docker logs crohdad
-
-cumulus@server01:~$ sudo docker logs crohdad
-Starting Quagga daemons (prio:10):. zebra. bgpd.
-Starting Quagga monitor daemon: watchquaggawatchquagga[32]: watchquagga 1.0.0+cl3u9 watching [zebra bgpd], mode [phased zebra restart]
-watchquagga[32]: bgpd state -> up : connect succeeded
-watchquagga[32]: zebra state -> up : connect succeeded
-watchquagga[32]: Watchquagga: Notifying Systemd we are up and running
-.
-Exiting from the script
-RUNNING CROHDAD: /root/crohdad.py -bl &
-
-################################################
-#                                              #
-#     Cumulus Routing On the Host              #
-#       Docker Advertisement Daemon            #
-#             --cRoHDAd--                      #
-#         originally written by Eric Pulvino   #
-#                                              #
-################################################
-
- STARTING UP.
-  Auto-Detecting existing containers and adding host routes...
-  Listening for Container Activity...
-
-
-[hit enter key to exit] or run 'docker stop <container>'
-STARTED -- Container id: 2ed5afcc86f48e1d7f35b2b940200a77f29e5957d6df743c64b53e38ef13f214
-    ADDING Host Route: 172.18.0.1/32 (from container: 2ed5afcc86f4)
-STARTED -- Container id: 4937317881fdbb746ec72fd25d1ac469eada8890da2f0c629f30394dfb04250e
-    ADDING Host Route: 172.18.0.2/32 (from container: 4937317881fd)
-STARTED -- Container id: b2c21cad49beb02289508631d4d64a090c66615a60c1f00f51590a008b150348
-    ADDING Host Route: 172.18.0.3/32 (from container: b2c21cad49be)
+ip route show table 30
 
 ```
 
@@ -95,14 +59,14 @@ Here we are using PHP/Apache webservers to represent our container workloads. To
 vagrant ssh oob-mgmt-server
 sudo su - cumulus
 ssh server01
-curl 172.21.0.1
+curl 172.16.1.4
 
-cumulus@server01:~$ curl 172.21.0.1
+cumulus@server01:~$ curl 172.16.1.4
 <html>
 <body>
 <h1>HOST: server04 Container ID: 1e473deb7dc6 </h1>
 <h1>
-Container IPv4 address: 172.21.0.1/24
+Container IPv4 address: 172.16.1.4/16
  </h1>
 </body>
 </html>
@@ -123,8 +87,8 @@ If you want to try running the CRoHDAd container in your own environment you can
 # Start the Container
 docker run -itd --name=crohdad --privileged --net=host \
     -v /var/run/docker.sock:/var/run/docker.sock \
-    -v /root/quagga/Quagga.conf:/etc/quagga/Quagga.conf \
-    cumulusnetworks/quagga:crohdad
+    -v /etc/iproute2/rt_tables:/etc/iproute2/rt_tables \
+    cumulusnetworks/crohdad:latest
 
 # Stop the Container
 docker rm -f crohdad
