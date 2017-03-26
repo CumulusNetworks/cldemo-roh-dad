@@ -4,9 +4,11 @@ This demo shows one of several different approaches to running Docker.
 This approach advertises host-routes for Docker containers which have been created on a docker-bridge without NAT enabled.
 Using this technique you can provide your containers with real IP addresses which are externally reachable and routed through the Host. 
 
-Cumulus Quagga is installed in a container along with the CRoHDAd daemon (Cumulus Routing On the Host Docker Advertisement Daemon). The CRoHDAd daemon listens to the docker-engine API and advertises new container IP addresses into the routed BGP fabric as they are created. When containers are destroyed, the daemon also removes the host-routes from the fabric.
+Cumulus Quagga is installed in a container along with the CRoHDAd daemon (Cumulus Routing On the Host Docker Advertisement Daemon) in another container. The CRoHDAd daemon listens to the docker-engine API and advertises new container IP addresses into the routed BGP fabric as they are created. When containers are destroyed, the daemon also removes the host-routes from the fabric.
 
 Using this technique you can deploy containers from a single large 172.16.0.0/16 subnet owned by multiple docker bridges on different hosts and located in different racks throughout the DC.
+
+![CRoHDAd Architecture](./crohdad_arch.png)
 
 ### Software in Use:
 *On Spines and Leafs:*
@@ -44,8 +46,8 @@ ansible-playbook ./run-demo.yml
 
 #### Understanding Which Containers Are Where
 After the demo has been deployed 20 containers will have been deployed.
-* 4 "RoH" containers (1 per Server) -- This container runs the Cumulus Quagga instance.
-* 4 "crohdad" containers (1 per Server) -- This container runs the CRoHDAd daemon and advertises new containers into kernel routing table 30
+* 4 "crohdad" containers (1 per Server) -- This container runs the CRoHDAd daemon and advertises containers into kernel routing table 30.
+* 4 "RoH" containers (1 per Server) -- This container runs the Cumulus Quagga instance and redistributes kernel routing table 30 into the routed fabric.
 * 12 "workload" containers (4 per Server) -- This container runs our workloads at different unique IP Addresses.
   * Server01 -- 172.16.1.1, 172.16.2.1, 172.16.3.1
   * Server02 -- 172.16.1.2, 172.16.2.2, 172.16.3.2
