@@ -36,7 +36,7 @@
     network_mode: host
     tty: true
     recreate: yes
-    image: cumulusnetworks/quagga:crohdad
+    image: cumulusnetworks/crohdad:latest
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "/etc/iproute2/rt_tables:/etc/iproute2/rt_tables"
