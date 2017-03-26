@@ -42,6 +42,16 @@ ansible-playbook ./run-demo.yml
 ```
 ### Viewing the Results
 
+#### Understanding Which Containers Are Where
+After the demo has been deployed 20 containers will have been deployed.
+* 4 "RoH" containers (1 per Server) -- This container runs the Cumulus Quagga instance.
+* 4 "crohdad" containers (1 per Server) -- This container runs the CRoHDAd daemon and advertises new containers into kernel routing table 30
+* 12 "workload" containers (4 per Server) -- This container runs our workloads at different unique IP Addresses.
+  * Server01 -- 172.16.1.1, 172.16.2.1, 172.16.3.1
+  * Server02 -- 172.16.1.2, 172.16.2.2, 172.16.3.2
+  * Server03 -- 172.16.1.3, 172.16.2.3, 172.16.3.3
+  * Server04 -- 172.16.1.4, 172.16.2.4, 172.16.3.4
+
 #### Watch The CRoHDAd Daemon Advertising Routes
 View the output of the CRoHDAd daemon as it is advertising /32 host-routes in the the new kernel routing table.
 ```
@@ -50,6 +60,7 @@ sudo su - cumulus
 ssh server01
 sudo docker logs crohdad
 ip route show table 30
+ip route show table containers #They are two names for the same routing table.
 sudo docker exec -it cumulus-roh /usr/bin/vtysh -c "show ip bgp"
 
 cumulus@server01:~$ sudo docker logs crohdad
@@ -83,6 +94,10 @@ STARTED -- Container id: f1e7e0f949d535d8a5f0a790fba96c56618b02a0bca474d3eb9930b
 STARTED -- Container id: 3dfc55907502140a4f0bcdbc912f3d6887e635344a64452b4eedef8236836d19
     ADDING Host Route: 172.16.3.1/32 (from container: 3dfc55907502)
 cumulus@server01:~$ ip route show table 30
+172.16.1.1 dev docker-neta  scope link 
+172.16.2.1 dev docker-neta  scope link 
+172.16.3.1 dev docker-neta  scope link 
+cumulus@server01:~$ ip route show table containers
 172.16.1.1 dev docker-neta  scope link 
 172.16.2.1 dev docker-neta  scope link 
 172.16.3.1 dev docker-neta  scope link 
