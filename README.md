@@ -50,6 +50,92 @@ sudo su - cumulus
 ssh server01
 sudo docker logs crohdad
 ip route show table 30
+sudo docker exec -it cumulus-roh /usr/bin/vtysh -c "show ip bgp"
+
+cumulus@server01:~$ sudo docker logs crohdad
+RUNNING CRoHDAd: /root/crohdad.py -l &
+
+################################################
+#                                              #
+#     Cumulus Routing On the Host              #
+#       Docker Advertisement Daemon            #
+#             --cRoHDAd--                      #
+#         originally written by Eric Pulvino   #
+#                                              #
+################################################
+
+ STARTING UP.
+
+    *Adding All Host Routes to Table 30*
+      Run "ip route show table 30" to see routes.
+    Flushing any pre-existing routes from table 30.
+
+
+  Auto-Detecting existing containers and adding host routes...
+  Listening for Container Activity...
+
+
+[hit enter key to exit] or run 'docker stop <container>'
+STARTED -- Container id: a1891dd5e347a6704bedd688c6e75a3aa642439c601d966aa31a69b0c2c9510c
+    ADDING Host Route: 172.16.1.1/32 (from container: a1891dd5e347)
+STARTED -- Container id: f1e7e0f949d535d8a5f0a790fba96c56618b02a0bca474d3eb9930b4089252c1
+    ADDING Host Route: 172.16.2.1/32 (from container: f1e7e0f949d5)
+STARTED -- Container id: 3dfc55907502140a4f0bcdbc912f3d6887e635344a64452b4eedef8236836d19
+    ADDING Host Route: 172.16.3.1/32 (from container: 3dfc55907502)
+cumulus@server01:~$ ip route show table 30
+172.16.1.1 dev docker-neta  scope link 
+172.16.2.1 dev docker-neta  scope link 
+172.16.3.1 dev docker-neta  scope link 
+
+cumulus@server01:~$ sudo docker exec -it cumulus-roh /usr/bin/vtysh -c "show ip bgp"
+BGP table version is 22, local router ID is 10.0.0.31
+Status codes: s suppressed, d damped, h history, * valid, > best, = multipath,
+              i internal, r RIB-failure, S Stale, R Removed
+Origin codes: i - IGP, e - EGP, ? - incomplete
+
+   Network          Next Hop            Metric LocPrf Weight Path
+*> 10.0.0.11/32     eth1            0             0 65011 i
+*                   eth2                          0 65012 65020 65011 i
+*  10.0.0.12/32     eth1                          0 65011 65020 65012 i
+*>                  eth2            0             0 65012 i
+*> 10.0.0.13/32     eth1                          0 65011 65020 65013 i
+*                   eth2                          0 65012 65020 65013 i
+*> 10.0.0.14/32     eth1                          0 65011 65020 65014 i
+*                   eth2                          0 65012 65020 65014 i
+*> 10.0.0.21/32     eth1                          0 65011 65020 i
+*                   eth2                          0 65012 65020 i
+*> 10.0.0.22/32     eth1                          0 65011 65020 i
+*                   eth2                          0 65012 65020 i
+*> 10.0.0.31/32     0.0.0.0                  0         32768 i
+*> 10.0.0.32/32     eth1                          0 65011 65032 i
+*                   eth2                          0 65012 65032 i
+*> 10.0.0.33/32     eth1                          0 65011 65020 65013 65033 i
+*                   eth2                          0 65012 65020 65013 65033 i
+*> 10.0.0.34/32     eth1                          0 65011 65020 65013 65034 i
+*                   eth2                          0 65012 65020 65013 65034 i
+*> 172.16.1.1/32    0.0.0.0                  0         32768 ?
+*> 172.16.1.2/32    eth1                          0 65011 65032 ?
+*                   eth2                          0 65012 65032 ?
+*> 172.16.1.3/32    eth1                          0 65011 65020 65013 65033 ?
+*                   eth2                          0 65012 65020 65013 65033 ?
+*> 172.16.1.4/32    eth1                          0 65011 65020 65013 65034 ?
+*                   eth2                          0 65012 65020 65013 65034 ?
+*> 172.16.2.1/32    0.0.0.0                  0         32768 ?
+*> 172.16.2.2/32    eth1                          0 65011 65032 ?
+*                   eth2                          0 65012 65032 ?
+*> 172.16.2.3/32    eth1                          0 65011 65020 65013 65033 ?
+*                   eth2                          0 65012 65020 65013 65033 ?
+*> 172.16.2.4/32    eth1                          0 65011 65020 65013 65034 ?
+*                   eth2                          0 65012 65020 65013 65034 ?
+*> 172.16.3.1/32    0.0.0.0                  0         32768 ?
+*> 172.16.3.2/32    eth1                          0 65011 65032 ?
+*                   eth2                          0 65012 65032 ?
+*  172.16.3.3/32    eth2                          0 65012 65020 65013 65033 ?
+*>                  eth1                          0 65011 65020 65013 65033 ?
+*> 172.16.3.4/32    eth1                          0 65011 65020 65013 65034 ?
+*                   eth2                          0 65012 65020 65013 65034 ?
+
+Displayed  22 out of 40 total prefixes
 
 ```
 
