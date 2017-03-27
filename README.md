@@ -17,7 +17,8 @@ Using this technique you can deploy containers from a single large 172.16.0.0/16
 *On Servers:*
 * Ubuntu 16.04
 * Docker-CE v17.03
-* cumulusnetworks/quagga:crohdad (container image)
+* cumulusnetworks/crohdad:latest (container image)
+* cumulusnetworks/quagga:latest (container image)
 * php:5.6-apache (container image)
 
 
@@ -36,6 +37,12 @@ vagrant up leaf01 leaf02 leaf03 leaf04 spine01 spine02 server01 server02 server0
 
 vagrant ssh oob-mgmt-server
 sudo su - cumulus
+
+sudo apt-get install software-properties-common -qy
+sudo apt-add-repository ppa:ansible/ansible -y
+sudo apt-get update -y
+sudo apt-get install ansible python-pip -qy
+sudo pip install ansible --upgrade
 
 git clone https://github.com/CumulusNetworks/cldemo-roh-dad.git
 cd cldemo-roh-dad
