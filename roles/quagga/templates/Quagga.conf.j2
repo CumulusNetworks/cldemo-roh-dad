@@ -7,8 +7,9 @@ interface {{ neighbor }}
 !
 {% endfor %}
 router bgp {{ intvars.asn }}
-    bgp router-id {{ intvars.loopback }}
-    network {{ intvars.loopback }}/32
+ bgp router-id {{ intvars.loopback }}
+ bgp bestpath as-path multipath-relax
+ redistribute connected route-map LOCAL_ROUTES
 {% for neighbor in intvars.neighbors %}
     neighbor {{ neighbor }} interface remote-as external
 {% endfor %}
@@ -20,4 +21,7 @@ address-family ipv6 unicast
 {% endfor %}
 exit-address-family
 !
+route-map LOCAL_ROUTES permit 10
+  match interface lo
 !
+
