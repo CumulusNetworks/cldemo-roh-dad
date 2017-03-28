@@ -6,36 +6,15 @@
     create: yes
     dest: /etc/apt/sources.list.d/docker.list
     line: 'deb https://apt.dockerproject.org/repo ubuntu-xenial main'
-  when: inventory_hostname == "oob-mgmt-server"
-
-- name: Add Docker Sources (HTTP)
-  lineinfile:
-    create: yes
-    dest: /etc/apt/sources.list.d/docker.list
-    line: 'deb http://apt.dockerproject.org/repo ubuntu-xenial main'
-  when: inventory_hostname != "oob-mgmt-server"
-
-- name: Install Docker, APT-Cacher-NG
-  apt: name={{item}} state=installed update_cache=yes
-  with_items:
-    - docker-engine
-    - apt-cacher-ng
-    - python-pip
-  when: inventory_hostname == "oob-mgmt-server"
-
-- name: Setup Servers to use Apt-Cacher
-  lineinfile:
-    create: yes
-    dest: /etc/apt/apt.conf.d/90apt-proxy
-    line: 'Acquire::http::Proxy "http://192.168.0.254:3142";'
-  when: inventory_hostname != "oob-mgmt-server"
 
 - name: Install Docker, Ifupdown2 and PIP
   apt: name={{item}} state=installed update_cache=yes
   with_items:
     - docker-engine
-    - ifupdown2
     - python-pip
+
+- name: Install IFUPDOWN2
+  apt: name=ifupdown2 state=installed update_cache=yes
   when: inventory_hostname != "oob-mgmt-server"
 
 - name: Add Docker-py Module
@@ -52,3 +31,27 @@
 - name: Start the Docker Daemon (if it isn't already running)
   service: name=docker state=started
 
+
+- block:
+    - name: Pull Containers to oob-mgmt-server
+      docker_image:
+        name: "{{item}}"
+      with_items:
+        - "cumulusnetworks/quagga:latest"
+        - "cumulusnetworks/crohdad:latest"
+
+    - name: Save Containers to Web Dir on oob-mgmt-server
+      shell: docker save -o /var/www/html/{{item}}.tar cumulusnetworks/{{item}}:latest
+      with_items:
+        - "quagga"
+        - "crohdad"
+
+    - name: Fixing File Permissions to Allow Container Download
+      file:
+        path: /var/www/html/{{item}}.tar
+        mode: 0755
+      with_items:
+        - "quagga"
+        - "crohdad"
+
+  when: inventory_hostname == "oob-mgmt-server"

@@ -13,6 +13,12 @@
   become_method: sudo
   roles:
     - install-software
+
+- hosts: servers
+  user: cumulus
+  become: yes
+  become_method: sudo
+  roles:
     - configure-interfaces
     - deploy-crohdad
     - deploy-containers
