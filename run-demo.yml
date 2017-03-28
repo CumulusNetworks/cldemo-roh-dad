@@ -1,5 +1,5 @@
 ---
-- hosts: spines
+- hosts: spines,leafs
   user: cumulus
   become: yes
   become_method: sudo
@@ -7,20 +7,12 @@
     - configure-interfaces
     - quagga
 
-- hosts: leafs
+- hosts: oob-mgmt-server,servers
   user: cumulus
   become: yes
   become_method: sudo
   roles:
-    - configure-interfaces
-    - quagga
-
-- hosts: servers
-  user: cumulus
-  become: yes
-  become_method: sudo
-  roles:
-    - install-docker-ifupdown2
+    - install-software
     - configure-interfaces
     - deploy-crohdad
     - deploy-containers
