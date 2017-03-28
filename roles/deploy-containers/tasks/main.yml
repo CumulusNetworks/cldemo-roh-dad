@@ -1,3 +1,12 @@
+- name: Download Container from oob-mgmt-server
+  get_url:
+    url: http://192.168.0.254:/php.tar
+    dest: /home/cumulus/php.tar
+    mode: 0777
+
+- name: Import Containers to Servers
+  shell: docker load -i /home/cumulus/php.tar
+
 - name: Create html shared folder on host
   file: path=/root/html state=directory mode=0755
 

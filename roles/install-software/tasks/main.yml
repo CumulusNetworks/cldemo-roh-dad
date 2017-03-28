@@ -39,12 +39,16 @@
       with_items:
         - "cumulusnetworks/quagga:latest"
         - "cumulusnetworks/crohdad:latest"
+        - "php:5.6-apache"
 
     - name: Save Containers to Web Dir on oob-mgmt-server
       shell: docker save -o /var/www/html/{{item}}.tar cumulusnetworks/{{item}}:latest
       with_items:
         - "quagga"
         - "crohdad"
+
+    - name: Save Containers to Web Dir on oob-mgmt-server
+      shell: docker save -o /var/www/html/php.tar php:5.6-apache
 
     - name: Fixing File Permissions to Allow Container Download
       file:
@@ -53,5 +57,6 @@
       with_items:
         - "quagga"
         - "crohdad"
+        - "php"
 
   when: inventory_hostname == "oob-mgmt-server"
