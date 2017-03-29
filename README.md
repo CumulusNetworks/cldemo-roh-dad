@@ -8,9 +8,24 @@ Cumulus Quagga is installed in a container along with the CRoHDAd daemon (Cumulu
 
 Using this technique you can deploy containers from a single large 172.16.0.0/16 subnet owned by multiple docker bridges on different hosts and located in different racks throughout the DC.
 
-![CRoHDAd Architecture](./crohdad_arch.png)
+### Network Topology
+![Network Topology](./docs/topology.png)
+This is the topology in use in this demo. Three containers are hosted on each server as shown. BGP running on the host redistributes these container host-routes for each container IP address into the routed fabric.
 
-### Software in Use:
+After the demo has been deployed 20 containers will have been deployed.
+* 4 "crohdad" containers (1 per Server) -- This container runs the CRoHDAd daemon and advertises containers into kernel routing table 30.
+* 4 "RoH" containers (1 per Server) -- This container runs the Cumulus Quagga instance and redistributes kernel routing table 30 into the routed fabric.
+* 12 "workload" containers (4 per Server) -- This container runs our workloads at different unique IP Addresses.
+  * Server01 -- 172.16.1.1, 172.16.2.1, 172.16.3.1
+  * Server02 -- 172.16.1.2, 172.16.2.2, 172.16.3.2
+  * Server03 -- 172.16.1.3, 172.16.2.3, 172.16.3.3
+  * Server04 -- 172.16.1.4, 172.16.2.4, 172.16.3.4
+
+
+![CRoHDAd Architecture](./docs/crohdad_arch.png)
+The architecture in use by CRoHDAd is what is shown above. As Docker creates and destroys containers, the CRoHDAd daemon is listening to the docker-engine API events stream. Once these events are detected. A corresponding host route is created in table 30 of the Linux kernel routing tables. At this point, the Cumulus Quagga instance will see the newly added route in the kernel routing table and redistribute the route into BGP or OSPF as the case may be. BGP unnumbered is the routing protocol in use for this demo. Using BGP unnumbered in this scenario means that no IPv4 addresses need to be configured on the uplinks from the server. 
+
+### Software in Use in the Demo:
 *On Spines and Leafs:*
   * Cumulus v3.2.0
 
@@ -50,16 +65,6 @@ cd cldemo-roh-dad
 ansible-playbook ./run-demo.yml
 ```
 ### Viewing the Results
-
-#### Understanding Which Containers Are Where
-After the demo has been deployed 20 containers will have been deployed.
-* 4 "crohdad" containers (1 per Server) -- This container runs the CRoHDAd daemon and advertises containers into kernel routing table 30.
-* 4 "RoH" containers (1 per Server) -- This container runs the Cumulus Quagga instance and redistributes kernel routing table 30 into the routed fabric.
-* 12 "workload" containers (4 per Server) -- This container runs our workloads at different unique IP Addresses.
-  * Server01 -- 172.16.1.1, 172.16.2.1, 172.16.3.1
-  * Server02 -- 172.16.1.2, 172.16.2.2, 172.16.3.2
-  * Server03 -- 172.16.1.3, 172.16.2.3, 172.16.3.3
-  * Server04 -- 172.16.1.4, 172.16.2.4, 172.16.3.4
 
 #### Watch The CRoHDAd Daemon Advertising Routes
 View the output of the CRoHDAd daemon as it is advertising /32 host-routes in the the new kernel routing table.
