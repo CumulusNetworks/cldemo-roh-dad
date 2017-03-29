@@ -10,6 +10,7 @@ Using this technique you can deploy containers from a single large 172.16.0.0/16
 
 ### Network Topology
 ![Network Topology](./docs/topology.png)
+
 This is the topology in use in this demo. Three containers are hosted on each server as shown. BGP running on the host redistributes these container host-routes for each container IP address into the routed fabric.
 
 After the demo has been deployed 20 containers will have been deployed.
