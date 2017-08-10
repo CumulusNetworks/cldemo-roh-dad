@@ -52,3 +52,10 @@
     ipam_options:
       subnet: "{{docker_networks[interfaces[inventory_hostname].docker_network].subnet}}"
       gateway: "{{docker_networks[interfaces[inventory_hostname].docker_network].gateway}}"
+
+- name: Enable Proxy Arp on Newly Created Docker-Bridge
+  sysctl:
+    name: "net.ipv4.conf.{{docker_networks[interfaces[inventory_hostname].docker_network].bridge_name}}.proxy_arp"
+    value: 1
+    state: present
+
