@@ -8,6 +8,8 @@ Cumulus Quagga is installed in a container along with the CRoHDAd daemon (Cumulu
 
 Using this technique you can deploy containers from a single large 172.16.0.0/16 subnet owned by multiple docker bridges on different hosts and located in different racks throughout the DC.
 
+More information on this solution can be found in the Design Guide:  [Container Networking with Cumulus Linux Validated Design Guide: Host Pack Advertises Container Addresses into the Routing Domain ](https://cumulusnetworks.com/learn/web-scale-networking-resources/validated-design-guides/Validated-Design-Guide-Container-Networking-Addressing-Routing-Domain/)
+
 ## Network Topology
 ![Network Topology](./docs/topology.png)
 
