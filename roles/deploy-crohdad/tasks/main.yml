@@ -22,6 +22,7 @@
     privileged: true
     interactive: true
     network_mode: host
+    restart_policy: unless-stopped
     tty: true
     recreate: yes
     image: cumulusnetworks/quagga:latest
@@ -34,6 +35,7 @@
     privileged: true
     interactive: true
     network_mode: host
+    restart_policy: unless-stopped
     tty: true
     recreate: yes
     image: cumulusnetworks/crohdad:latest
