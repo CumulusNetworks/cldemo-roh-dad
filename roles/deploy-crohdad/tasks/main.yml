@@ -38,10 +38,11 @@
     restart_policy: unless-stopped
     tty: true
     recreate: yes
-    image: cumulusnetworks/crohdad:latest
+    image: cumulusnetworks/crohdad:1.0.1
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
       - "/etc/iproute2/rt_tables:/etc/iproute2/rt_tables"
+      - "/dev/log:/dev/log"
 
 - name: Create a network with options
   docker_network:
