@@ -37,7 +37,7 @@ The architecture in use by CRoHDAd is what is shown above. As Docker creates and
 * Ubuntu 16.04
 * Docker-CE v17.03
 * cumulusnetworks/crohdad:latest (container image)
-* cumulusnetworks/quagga:latest (container image)
+* cumulusnetworks/frrouting:latest (container image)
 * php:5.6-apache (container image)
 
 
