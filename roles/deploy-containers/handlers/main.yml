@@ -5,5 +5,5 @@
 - name: reload networking legacy
   shell: ifdown -a && ifup -a
 
-- name: restart quagga
-  service: name=quagga state=restarted
+- name: restart frr
+  service: name=frr state=restarted
