@@ -5,7 +5,7 @@
   become_method: sudo
   roles:
     - configure-interfaces
-    - quagga
+    - frr
 
 - hosts: leafs
   user: cumulus
@@ -13,7 +13,7 @@
   become_method: sudo
   roles:
     - configure-interfaces
-    - quagga
+    - frr
 
 - hosts: servers
   user: cumulus
